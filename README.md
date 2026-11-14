@@ -99,6 +99,6 @@ La división registrada en el README original era:
 - Integrante 2: base de datos, persistencia y consultas SQL.
 - Trabajo conjunto: integración, interfaz, MVC, pruebas, documentación y presentación.
 
-## 12. Alcance y limitaciones
+## 10.
 
 El proyecto realiza consulta, sincronización básica, almacenamiento y lectura filtrada. No implementa CRUD completo, autenticación de usuarios, edición/eliminación desde la web, despliegue público ni descarga masiva de todo el conjunto. La conexión real a SQL Server depende de la configuración local, el servicio SQL Server y el controlador ODBC instalado, aparte el proyecto académico consulta, procesamiento y almacenamiento de datos abiertos sobre COVID-19 en Colombia.
