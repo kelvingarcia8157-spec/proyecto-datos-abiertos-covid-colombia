@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos Abiertos Colombia</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Datos Abiertos Colombia</h1>
+    <p>Sistema de consulta y análisis de casos COVID-19</p>
+</header>
+
+<main>
+
+    {% with mensajes = get_flashed_messages(with_categories=true) %}
+        {% if mensajes %}
+        <section class="mensajes" aria-live="polite">
+            {% for categoria, mensaje in mensajes %}
+            <p class="mensaje {{ categoria }}">{{ mensaje }}</p>
+            {% endfor %}
+        </section>
+        {% endif %}
+    {% endwith %}
+
+    <section class="sincronizacion">
+        <div>
+            <h2>Actualizar datos desde la API</h2>
+            <p>Consulta hasta 100 casos nuevos de datos.gov.co y los almacena en SQL Server sin duplicarlos.</p>
+        </div>
+        <form method="POST" action="{{ url_for('sincronizar') }}">
+            <button type="submit">Consultar API y guardar datos</button>
+        </form>
+    </section>
+
+    <section class="resumen">
+        <article class="tarjeta">
+            <h3>Total de casos almacenados</h3>
+            <p>{{ resumen.total_casos }}</p>
+        </article>
+
+        <article class="tarjeta">
+            <h3>Edad promedio</h3>
+            <p>{{ resumen.edad_promedio }} años</p>
+        </article>
+
+        <article class="tarjeta">
+            <h3>Casos recuperados</h3>
+            <p>{{ resumen.total_recuperados }}</p>
+        </article>
+    </section>
+
+    <section class="buscador">
+        <h2>Buscar casos</h2>
+
+        <form method="GET" action="/">
+            <input
+                type="text"
+                name="buscar"
+                placeholder="Municipio, departamento o ID del caso"
+                value="{{ busqueda }}"
+            >
+
+            <button type="submit">Buscar</button>
+
+            <a href="/">Limpiar</a>
+        </form>
+    </section>
+
+    <section class="tabla">
+        <h2>Registros encontrados: {{ casos|length }}</h2>
+
+        <div class="contenedor-tabla">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID del caso</th>
+                        <th>Fecha de reporte</th>
+                        <th>Departamento</th>
+                        <th>Municipio</th>
+                        <th>Edad</th>
+                        <th>Sexo</th>
+                        <th>Estado</th>
+                        <th>Recuperación</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for caso in casos %}
+                    <tr>
+                        <td>{{ caso.id_de_caso }}</td>
+                        <td>{{ caso.fecha_reporte_web or '' }}</td>
+                        <td>{{ caso.departamento_nom or '' }}</td>
+                        <td>{{ caso.ciudad_municipio_nom or '' }}</td>
+                        <td>{{ caso.edad if caso.edad is not none else '' }}</td>
+                        <td>{{ caso.sexo or '' }}</td>
+                        <td>{{ caso.estado or '' }}</td>
+                        <td>{{ caso.recuperado or '' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8">
+                            No se encontraron registros.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <p>Proyecto académico - Desarrollo de Aplicaciones con Acceso a Datos</p>
+    <p>Fuente: Datos Abiertos de Colombia</p>
+</footer>
+
+</body>
+</html>
