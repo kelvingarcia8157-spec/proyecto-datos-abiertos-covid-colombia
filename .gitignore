@@ -1,5 +1,19 @@
+
+# Entorno virtual
 venv/
-__pycache__/
+.venv/
+
+# Configuración privada
 .env
+.env.*
+
+# Permitir plantilla pública
+!.env.example
+
+# Archivos temporales Python
+__pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Archivos del editor
+.vscode/
