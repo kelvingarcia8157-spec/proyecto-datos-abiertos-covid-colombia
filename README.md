@@ -1,104 +1,162 @@
-# Proyecto de Datos Abiertos: COVID-19 en Colombia
+# Sistema Web de Consulta y Análisis de Datos Abiertos de Colombia
 
 ## 1. Descripción del proyecto
 
-Este proyecto permite consultar datos abiertos relacionados con los casos de COVID-19 en Colombia mediante una API pública. La información obtenida se procesa y almacena en una base de datos SQL Server.
-
-La aplicación está desarrollada en Python utilizando Flask y una arquitectura organizada por componentes.
+Aplicación web desarrollada en Python y Flask que permite consultar datos abiertos de casos positivos de COVID-19 en Colombia mediante una API REST, procesarlos en formato JSON, almacenarlos en SQL Server y consultarlos desde el navegador.
 
 ## 2. Objetivo general
 
-Desarrollar una aplicación que permita consultar, procesar y almacenar información pública sobre los casos de COVID-19 en Colombia, utilizando una API y una base de datos relacional.
+Desarrollar una aplicación web utilizando Python, Flask, SQL Server y el patrón MVC para consultar, almacenar y analizar información pública de COVID-19 en Colombia.
 
-## 3. Tecnologías utilizadas
+## 3. Fuente de información
 
-- Python
-- Flask
-- SQL Server
-- API de datos.gov.co
-- HTML
-- CSS
-- Requests
-- PyODBC
+- Conjunto de datos: Casos positivos de COVID-19 en Colombia.
+- Portal: https://www.datos.gov.co/
+- Identificador del recurso: gt2j-8ykr.
+- Endpoint: https://www.datos.gov.co/resource/gt2j-8ykr.json
+- Formato de respuesta: JSON.
+- Consulta: hasta 100 registros por sincronización.
 
-## 4. Funcionamiento del proyecto
+## 4. Tecnologías utilizadas
 
-1. El usuario ingresa a la aplicación web.
-2. La aplicación permite solicitar información a la API de datos abiertos.
-3. El sistema recibe los registros de COVID-19.
-4. Los datos son procesados por el modelo.
-5. La información se almacena en SQL Server.
-6. Se controlan los registros duplicados para evitar almacenar la misma información varias veces.
+- Python 3.10 o superior.
+- Flask.
+- Requests.
+- SQL Server y SSMS.
+- pyodbc.
+- Microsoft ODBC Driver 18 for SQL Server.
+- HTML5 y CSS3.
+- python-dotenv.
 
-## 5. Estructura del proyecto
+## 5. Arquitectura MVC
 
-- api/: contiene el cliente encargado de consultar la API.
-- models/: contiene las funciones para procesar y guardar los datos.
-- database/: contiene los scripts para crear y configurar la base de datos.
-- templates/: contiene las páginas HTML.
-- static/: contiene los estilos CSS.
-- tests/: contiene las pruebas automatizadas.
-- app.py: archivo principal de la aplicación.
-- sincronizar.py: permite ejecutar la sincronización desde la terminal.
+**Modelo:** `models/datos_models.py` realiza las conexiones, inserciones y consultas a SQL Server.
 
-## 6. Instalación y ejecución
+**Vista:** `templates/index.html` presenta los datos y `static/estilos.css` define el diseño.
 
-### Requisitos
+**Controlador:** `app.py` administra las solicitudes del navegador y coordina las operaciones.
 
-- Python instalado.
-- SQL Server instalado y configurado.
-- Controlador ODBC para SQL Server.
+**Cliente API:** `api/api__client.py` consulta los datos externos.
 
-### Instalar dependencias
+## 6. Funcionamiento
 
-```bash
-pip install -r requirements.txt
+1. El usuario abre la aplicación.
+2. Puede sincronizar registros desde la API.
+3. Python recibe y procesa los datos JSON.
+4. El modelo almacena los registros en SQL Server.
+5. Se evita insertar identificadores duplicados.
+6. El usuario consulta los registros mediante la página web.
+7. Puede buscar por identificador, departamento o municipio.
+8. La aplicación muestra indicadores estadísticos básicos.
+
+## 7. Campos utilizados
+
+| Campo | Descripción |
+|---|---|
+| id_de_caso | Identificador único del caso |
+| fecha_reporte_web | Fecha del reporte |
+| fecha_de_notificaci_n | Fecha de notificación |
+| departamento_nom | Departamento |
+| ciudad_municipio_nom | Municipio |
+| edad | Edad del paciente |
+| sexo | Sexo registrado |
+| estado | Estado clínico |
+| recuperado | Estado de recuperación |
+
+## 8. Instalación
+
+1. Instalar Python, SQL Server, SSMS y el controlador ODBC correspondiente.
+2. Descargar el repositorio.
+3. Abrir la carpeta en Visual Studio Code.
+4. Crear y activar el entorno virtual:
+
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 ```
 
-### Configurar variables de entorno
+5. Instalar las dependencias:
 
-Crear un archivo `.env` tomando como referencia `.env.example` y configurar los datos de conexión a SQL Server.
+```powershell
+python -m pip install -r requirements.txt
+```
 
-### Crear la base de datos
+6. Copiar `.env.example` a un archivo llamado `.env` y configurar SQL Server.
+7. Ejecutar `database/crear_base_datos.sql` en SSMS.
+8. Iniciar la aplicación:
 
-Ejecutar el script:
-
-`database/crear_base_datos.sql`
-
-### Ejecutar la aplicación
-
-```bash
+```powershell
 python app.py
 ```
 
-Abrir en el navegador:
+9. Abrir http://127.0.0.1:5000
 
-`http://127.0.0.1:5000`
+## 9. Pruebas
 
-## 7. Pruebas del proyecto
+Prueba de la API:
 
-Para ejecutar las pruebas automatizadas:
+```powershell
+python probar_api.py
+```
 
-```bash
+Prueba de SQL Server:
+
+```powershell
+python probar_conexion.py
+```
+
+Pruebas automatizadas:
+
+```powershell
 python -m unittest discover -s tests -v
 ```
 
-## 8. Fuente de información
+Para comprobar el funcionamiento completo se debe sincronizar, consultar registros, utilizar el filtro y repetir la sincronización para verificar que no se dupliquen identificadores.
 
-API de datos abiertos de Colombia:
+## 10. Integrantes y aportes
 
-https://www.datos.gov.co/
+## Integrantes y aportes al proyecto
 
-Conjunto de datos: Casos positivos de COVID-19 en Colombia.
+### Integrante 1: Jose Miguel Rodriguez Escobar
 
-Identificador del recurso: gt2j-8ykr
+**Responsabilidades: Consumo de API y procesamiento de datos.**
 
-## 9. Aportes de los integrantes
-La división registrada en el README original era:
-- Integrante 1: consumo de API, procesamiento JSON y sincronización.
-- Integrante 2: base de datos, persistencia y consultas SQL.
-- Trabajo conjunto: integración, interfaz, MVC, pruebas, documentación y presentación.
+- Selección del conjunto de datos abiertos de COVID-19 en Colombia.
+- Implementación del consumo de la API REST mediante Python y Requests.
+- Configuración del endpoint de datos.gov.co.
+- Procesamiento y validación de los datos recibidos en formato JSON.
+- Desarrollo del módulo `api/api__client.py`.
+- Implementación del proceso de sincronización mediante `sincronizar.py`.
 
-## 10.
+### Integrante 2: Kelvin Jose Garcia Peñaloza
 
-El proyecto realiza consulta, sincronización básica, almacenamiento y lectura filtrada. No implementa CRUD completo, autenticación de usuarios, edición/eliminación desde la web, despliegue público ni descarga masiva de todo el conjunto. La conexión real a SQL Server depende de la configuración local, el servicio SQL Server y el controlador ODBC instalado, aparte el proyecto académico consulta, procesamiento y almacenamiento de datos abiertos sobre COVID-19 en Colombia.
+**Responsabilidades: Base de datos SQL Server y persistencia.**
+
+- Creación y configuración de la base de datos `DatosAbiertosColombia`.
+- Desarrollo del script SQL para crear la tabla `CasosCovid`.
+- Implementación de la conexión entre Python y SQL Server mediante pyodbc.
+- Desarrollo del módulo `models/datos_models.py`.
+- Implementación del almacenamiento de registros y prevención de duplicados.
+- Desarrollo de las consultas SQL para búsqueda y obtención de estadísticas.
+
+### Aportes realizados en conjunto
+
+- Integración de los módulos mediante el patrón MVC.
+- Desarrollo del controlador Flask (`app.py`).
+- Creación de la interfaz web con HTML y CSS.
+- Implementación de formularios de búsqueda y sincronización.
+- Realización de pruebas de funcionamiento.
+- Elaboración de la documentación del proyecto en `README.md`.
+- Organización del código fuente para su entrega en GitHub.
+
+## 11. Evidencias
+
+Las capturas del funcionamiento del sistema se encuentran en la carpeta `evidencias/`, incluyendo respuesta JSON, registros en SQL Server, interfaz web, sincronización y búsqueda filtrada.
+
+## 12. Alcance
+
+El proyecto implementa consulta de API, almacenamiento, sincronización, búsqueda y visualización de datos. No incluye CRUD completo, autenticación de usuarios ni despliegue público.
+
+## 13. Seguridad
+
+El archivo `.env` contiene configuración local y no debe publicarse. El repositorio incluye `.env.example` como plantilla sin contraseñas reales.
